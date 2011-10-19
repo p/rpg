@@ -198,13 +198,13 @@ then
     heed "$(echo "$badpacks" |grep -c .) packages failed to resolve:"
     for pack in $(echo "$badpacks" | cut -d ' ' -f 1)
     do
-        heed "$pack ($(cut -d ' ' -f 3- "$packlist"))"
+        heed "$pack ($(awk '$2 == "'"$pack"'" { print $3, $4 }' "$packlist"))"
+        versions=$(grep "^$pack " "$release" | cut -d ' ' -f 2)
+        if test -n "$versions"
+        then
+            heed "available versions: $(echo $versions)"
+        fi
     done
-    versions=$(grep "^$pack " "$release" | cut -d ' ' -f 2)
-    if test -n "$versions"
-    then
-        heed "available versions: $(echo $versions)"
-    fi
     exit 1
 fi
 
